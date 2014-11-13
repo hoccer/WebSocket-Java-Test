@@ -14,4 +14,4 @@ build-log.xml
 **/proguard_logs
 **/git_properties
 **/.DS_Store
-
+.idea/workspace.xml
