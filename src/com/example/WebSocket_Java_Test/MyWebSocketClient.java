@@ -31,7 +31,7 @@ public class MyWebSocketClient extends org.java_websocket.client.WebSocketClient
 
     @Override
     public void onOpen(ServerHandshake handshake) {
-        System.out.println("Closed: " + handshake.getHttpStatusMessage());
+        System.out.println("Open: " + handshake.getHttpStatusMessage());
     }
 
     @Override
