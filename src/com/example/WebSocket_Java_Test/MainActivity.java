@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import org.java_websocket.drafts.Draft_17;
 
-import javax.net.ssl.*;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.InputStream;
 import java.net.URI;
 import java.security.KeyStore;
-import java.security.cert.X509Certificate;
 import java.util.HashMap;
 
 public class MainActivity extends Activity {
