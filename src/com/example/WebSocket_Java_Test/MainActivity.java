@@ -4,11 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import org.java_websocket.drafts.Draft_17;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
+import java.io.InputStream;
 import java.net.URI;
+import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 
@@ -29,21 +28,23 @@ public class MainActivity extends Activity {
         MyWebSocketClient client = new MyWebSocketClient(serverUri, new Draft_17(), httpHeaders);
 
         try {
-            final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-                @Override
-                public void checkClientTrusted( final X509Certificate[] chain, final String authType ) {
-                }
-                @Override
-                public void checkServerTrusted( final X509Certificate[] chain, final String authType ) {
-                }
-                @Override
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-            } };
+            // get the KeyStore
+            KeyStore ks = KeyStore.getInstance("BKS");
+            // load our keys into it
+            InputStream in = getResources().openRawResource(R.raw.ssl_bks);
+            try {
+                ks.load(in, "password".toCharArray());
+            } finally {
+                in.close();
+            }
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            kmf.init(ks, null);
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(ks);
 
             SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, trustAllCerts, null);
+            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
             SSLSocketFactory factory = sslContext.getSocketFactory();
 
             client.setSocket(factory.createSocket());
